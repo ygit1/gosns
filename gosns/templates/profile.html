@@ -1,0 +1,80 @@
+{{define "content"}}
+<div class="container">
+    <div class="profile-header">
+        <img src="{{.User.Avatar}}" alt="{{.User.Username}}" class="profile-avatar">
+        <div class="profile-info">
+            <h2>{{.User.Username}}</h2>
+            <p>{{.User.Bio}}</p>
+            <div class="profile-stats">
+                <span><strong>{{.PostCount}}</strong> 投稿</span>
+                <span><strong>{{.FollowerCount}}</strong> フォロワー</span>
+                <span><strong>{{.FollowingCount}}</strong> フォロー中</span>
+            </div>
+            {{if .IsOwnProfile}}
+            <button class="btn btn-secondary" onclick="toggleEditProfile()">プロフィール編集</button>
+            {{else}}
+            <button class="btn btn-primary follow-btn" data-user-id="{{.User.ID}}">
+                {{if .IsFollowing}}フォロー解除{{else}}フォロー{{end}}
+            </button>
+            {{end}}
+        </div>
+    </div>
+
+    {{if .IsOwnProfile}}
+    <div id="edit-profile" class="edit-profile" style="display:none;">
+        <h3>プロフィール編集</h3>
+        <form action="/profile/update" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="bio">自己紹介</label>
+                <textarea id="bio" name="bio" rows="3">{{.User.Bio}}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="avatar">アバター画像</label>
+                <input type="file" id="avatar" name="avatar" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-primary">更新</button>
+            <button type="button" class="btn btn-secondary" onclick="toggleEditProfile()">キャンセル</button>
+        </form>
+    </div>
+    {{end}}
+
+    <div class="profile-posts">
+        <h3>投稿</h3>
+        {{range .Posts}}
+        <div class="post" data-post-id="{{.ID}}">
+            <div class="post-header">
+                <img src="{{.Avatar}}" alt="{{.Username}}" class="avatar">
+                <div class="post-info">
+                    <strong>{{.Username}}</strong>
+                    <span class="post-time">{{.CreatedAt.Format "2006-01-02 15:04"}}</span>
+                </div>
+            </div>
+            <div class="post-content">
+                <p>{{.Content}}</p>
+                {{if .ImageURL}}
+                <img src="{{.ImageURL}}" alt="投稿画像" class="post-image">
+                {{end}}
+            </div>
+            <div class="post-actions">
+                <button class="btn btn-sm like-btn" data-post-id="{{.ID}}">
+                    ❤️ <span class="like-count">{{.Likes}}</span>
+                </button>
+                <button class="btn btn-sm comment-btn" data-post-id="{{.ID}}">
+                    💬 <span class="comment-count">{{.Comments}}</span>
+                </button>
+                {{if eq .UserID $.CurrentUserID}}
+                <button class="btn btn-sm btn-danger delete-btn" data-post-id="{{.ID}}">削除</button>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<script>
+function toggleEditProfile() {
+    const editForm = document.getElementById('edit-profile');
+    editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{{end}}

@@ -1,0 +1,41 @@
+{{define "content"}}
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>新規登録</h2>
+        {{if .Error}}
+        <div class="alert alert-error">{{.Error}}</div>
+        {{end}}
+        
+        <form action="/register" method="POST">
+            <div class="form-group">
+                <label for="username">ユーザー名</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">パスワード確認</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">登録</button>
+        </form>
+
+        <div class="divider">または</div>
+
+        <a href="/auth/google" class="btn btn-google btn-full">
+            <img src="/static/img/google-icon.png" alt="Google"> 
+            Googleで登録
+        </a>
+
+        <p class="auth-link">
+            既にアカウントをお持ちの方は <a href="/login">こちらからログイン</a>
+        </p>
+    </div>
+</div>
+{{end}}

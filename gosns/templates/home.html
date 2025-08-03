@@ -1,0 +1,85 @@
+{{define "content"}}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {{if .IsAuthenticated}}
+            <div class="post-form">
+                <h3>新しい投稿</h3>
+                <form id="postForm" action="/posts" method="POST" enctype="multipart/form-data">
+                    <textarea name="content" placeholder="今何してる？" rows="3" required></textarea>
+                    <div class="form-group">
+                        <input type="file" name="image" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">投稿する</button>
+                </form>
+            </div>
+            {{end}}
+
+            <div class="posts">
+                <h3>タイムライン</h3>
+                {{range .Posts}}
+                <div class="post" data-post-id="{{.ID}}">
+                    <div class="post-header">
+                        <img src="{{.Avatar}}" alt="{{.Username}}" class="avatar">
+                        <div class="post-info">
+                            <strong>{{.Username}}</strong>
+                            <span class="post-time">{{.CreatedAt.Format "2006-01-02 15:04"}}</span>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>{{.Content}}</p>
+                        {{if .ImageURL}}
+                        <img src="{{.ImageURL}}" alt="投稿画像" class="post-image">
+                        {{end}}
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn btn-sm like-btn" data-post-id="{{.ID}}">
+                            ❤️ <span class="like-count">{{.Likes}}</span>
+                        </button>
+                        <button class="btn btn-sm comment-btn" data-post-id="{{.ID}}">
+                            💬 <span class="comment-count">{{.Comments}}</span>
+                        </button>
+                        {{if eq .UserID $.CurrentUserID}}
+                        <button class="btn btn-sm btn-danger delete-btn" data-post-id="{{.ID}}">削除</button>
+                        {{end}}
+                    </div>
+                    <div class="comments" id="comments-{{.ID}}" style="display:none;">
+                        <div class="comment-form">
+                            <form class="comment-submit" data-post-id="{{.ID}}">
+                                <input type="text" name="content" placeholder="コメントを入力..." required>
+                                <button type="submit" class="btn btn-sm">送信</button>
+                            </form>
+                        </div>
+                        <div class="comment-list" id="comment-list-{{.ID}}">
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="sidebar">
+                {{if .IsAuthenticated}}
+                <div class="user-info">
+                    <img src="{{.CurrentUser.Avatar}}" alt="{{.CurrentUser.Username}}" class="avatar">
+                    <h4>{{.CurrentUser.Username}}</h4>
+                    <p>{{.CurrentUser.Bio}}</p>
+                </div>
+                {{end}}
+
+                <div class="suggestions">
+                    <h4>おすすめユーザー</h4>
+                    {{range .SuggestedUsers}}
+                    <div class="user-suggestion">
+                        <img src="{{.Avatar}}" alt="{{.Username}}" class="avatar-sm">
+                        <span>{{.Username}}</span>
+                        <button class="btn btn-sm follow-btn" data-user-id="{{.ID}}">フォロー</button>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} - GoSNS</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">GoSNS</a>
+            {{if .IsAuthenticated}}
+            <div class="nav-links">
+                <a href="/" class="nav-link">ホーム</a>
+                <a href="/profile" class="nav-link">プロフィール</a>
+                <a href="/logout" class="nav-link">ログアウト</a>
+            </div>
+            {{else}}
+            <div class="nav-links">
+                <a href="/login" class="nav-link">ログイン</a>
+                <a href="/register" class="nav-link">登録</a>
+            </div>
+            {{end}}
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {{template "content" .}}
+    </main>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
