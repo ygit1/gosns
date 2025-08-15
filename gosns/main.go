@@ -89,8 +89,8 @@ func main() {
 	api.HandleFunc("/users/{id}/follow", authMiddleware(app.followUserAPI)).Methods("POST")
 
 	// サーバー起動
-	fmt.Println("サーバーを起動中... http://podd.win:9090")
-	log.Fatal(http.ListenAndServe(":9090", r))
+	fmt.Println("サーバーを起動中... http://localhost:8086")
+	log.Fatal(http.ListenAndServe(":8086", r))
 }
 
 func (app *App) homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -390,7 +390,13 @@ func (app *App) getCurrentUserID(r *http.Request) int {
 }
 
 func (app *App) renderTemplate(w http.ResponseWriter, name string, data PageData) {
-	err := app.templates.ExecuteTemplate(w, "layout.html", data)
+	// まず指定されたテンプレートをパース
+	tmpl := template.Must(template.ParseFiles(
+		"templates/layout.html",
+		"templates/"+name+".html",
+	))
+	
+	err := tmpl.Execute(w, data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
